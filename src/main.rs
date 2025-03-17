@@ -9,7 +9,7 @@ use bevy::{
     core_pipeline::prepass::{DeferredPrepass, DepthPrepass},
     pbr::OpaqueRendererMethod,
     prelude::*,
-    render::RenderPlugin,
+    render::RenderPlugin, window::WindowResolution,
 };
 use bevy_egui::{EguiContexts, EguiPlugin, egui};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
@@ -29,6 +29,7 @@ fn main() {
                 .set(WindowPlugin {
                     primary_window: Some(Window {
                         name: Some("Bevy Millions Ball".into()),
+                        resolution: WindowResolution::new(1920., 1080.),
                         ..default()
                     }),
                     ..default()
@@ -38,8 +39,8 @@ fn main() {
         .add_plugins(PanOrbitCameraPlugin)
         .add_plugins(CustomMaterialPlugin)
         .add_plugins(PhysicsPlugin {
-            max_number_of_agents: 1024 * 1024,
-            number_of_grids_one_dimension: 1024,
+            max_number_of_agents: 256 * 256,
+            number_of_grids_one_dimension: 64,
             half_map_height: 8,
             e_agent: 0.8,
             e_envir: 0.8,
@@ -80,7 +81,7 @@ fn setup(
     // 2. light
     commands.spawn((
         DirectionalLight {
-            shadows_enabled: false,
+            shadows_enabled: true,
             ..default()
         },
         Transform::from_rotation(Quat::from_euler(EulerRot::ZYX, 0., PI * -0.15, PI * -0.15)),
@@ -119,6 +120,7 @@ fn physics_ui(
         (&mut Transform, &MeshMaterial3d<ReferenceGridMaterial>),
         With<BackgroundMarker>,
     >,
+    mut light: Query<&mut DirectionalLight>,
     mut rfg_mats: ResMut<Assets<ReferenceGridMaterial>>,
     mut ctx: EguiContexts,
     mut physics_settings: ResMut<PhysicsSettings>,
@@ -188,6 +190,8 @@ fn physics_ui(
                 .text("grid_nums_one_dimension"),
             );
             ui.separator();
+
+            ui.add(egui::Checkbox::new(&mut light.single_mut().shadows_enabled, "shadows_enabled"));
         });
     });
 }
