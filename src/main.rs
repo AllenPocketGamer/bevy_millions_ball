@@ -9,7 +9,8 @@ use bevy::{
     core_pipeline::prepass::{DeferredPrepass, DepthPrepass},
     pbr::OpaqueRendererMethod,
     prelude::*,
-    render::RenderPlugin, window::WindowResolution,
+    render::RenderPlugin,
+    window::WindowResolution,
 };
 use bevy_egui::{EguiContexts, EguiPlugin, egui};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
@@ -140,6 +141,17 @@ fn physics_ui(
     // ui
     let max_grid_nums = physics_settings.max_number_of_grids_on_dimension();
     egui::Window::new("Physics Settings").show(ctx.ctx_mut(), |ui| {
+        // Display information about controls and current simulation
+        ui.heading("Controls & Info");
+        ui.label("• Left mouse button: Rotate camera");
+        ui.label("• Right mouse button: Pan camera");
+        ui.label("• Scroll wheel: Zoom in/out");
+        ui.label(format!(
+            "• Current simulation: {} spheres",
+            physics_settings.max_number_of_agents()
+        ));
+        ui.separator();
+
         ui.vertical(|ui| {
             ui.add(egui::Checkbox::new(
                 &mut physics_settings.enable_simulation,
@@ -191,7 +203,10 @@ fn physics_ui(
             );
             ui.separator();
 
-            ui.add(egui::Checkbox::new(&mut light.single_mut().shadows_enabled, "shadows_enabled"));
+            ui.add(egui::Checkbox::new(
+                &mut light.single_mut().shadows_enabled,
+                "shadows_enabled (disable shadows to improve performance)",
+            ));
         });
     });
 }
