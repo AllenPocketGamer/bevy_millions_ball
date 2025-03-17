@@ -11,6 +11,9 @@ readme = "README.md"
 [dependencies]
 bevy = "0.15.3"
 bevy_radix_sort = "0.15.0"
+bevy_wgsl_utils = { git = "https://github.com/AllenPocketGamer/bevy_wgsl_utils.git", branch = "master" }
+bevy_egui = "0.31.0"
+bevy_panorbit_camera = { version = "0.21.*", features = ["bevy_egui"] }
 log = { version = "0.4", features = ["max_level_debug", "release_max_level_warn"] }
 rand = "0.8.0"
 rand_chacha = "0.3.1"
