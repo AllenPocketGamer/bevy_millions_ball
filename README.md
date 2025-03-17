@@ -3,7 +3,7 @@
 ![Bevy Millions Ball](https://img.shields.io/badge/Bevy-0.15.3-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-![bevy_millions_ball_showcase](./assets/videos/bevy_millions_ball_showcase.mp4)
+![bevy_millions_ball_showcase](./assets/videos/bevy_millions_ball_showcase.gif)
 
 A high-performance collision detection system built with the Bevy game engine, capable of simulating **millions of spheres** in real-time.
 
