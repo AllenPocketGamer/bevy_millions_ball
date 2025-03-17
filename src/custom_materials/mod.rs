@@ -1,6 +1,9 @@
 pub mod reference_grid;
 pub use reference_grid::*;
 
+pub mod physics_ball;
+pub use physics_ball::*;
+
 use bevy::{asset::load_internal_asset, prelude::*};
 use bevy_wgsl_utils::WgslUtilsPlugin;
 
@@ -24,7 +27,8 @@ impl Plugin for CustomMaterialPlugin {
             Shader::from_wgsl
         );
 
-        app.add_plugins(MaterialReferenceGridPlugin);
+        app.add_plugins(MaterialReferenceGridPlugin)
+            .add_plugins(MaterialPhysicsBallPlugin::default());
 
         if !app.is_plugin_added::<WgslUtilsPlugin>() {
             app.add_plugins(WgslUtilsPlugin);

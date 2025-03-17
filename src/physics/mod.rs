@@ -201,7 +201,7 @@ fn packed_vfme_data(max_number_of_agents: u32) -> Vec<UVec4> {
 
     let mut packed_vfme_data = Vec::with_capacity(max_number_of_agents as usize);
     for _ in 0..max_number_of_agents {
-        let velocity = Vec3::new(rng.gen_range(-0.2..0.2), 0., rng.gen_range(-0.2..0.2));
+        let velocity = Vec3::new(rng.gen_range(-0.8..0.8), 0., rng.gen_range(-0.8..0.8));
         let extforce = Vec3::new(0., 0., 0.);
         let massv = 1f32;
         let packed = pack_vfme(velocity, extforce, massv);

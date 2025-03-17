@@ -5,7 +5,12 @@ mod physics;
 
 use std::f32::consts::PI;
 
-use bevy::{pbr::OpaqueRendererMethod, prelude::*, render::RenderPlugin};
+use bevy::{
+    core_pipeline::prepass::{DeferredPrepass, DepthPrepass},
+    pbr::OpaqueRendererMethod,
+    prelude::*,
+    render::RenderPlugin,
+};
 use bevy_egui::{EguiContexts, EguiPlugin, egui};
 use bevy_panorbit_camera::{PanOrbitCamera, PanOrbitCameraPlugin};
 use custom_materials::{
@@ -33,8 +38,8 @@ fn main() {
         .add_plugins(PanOrbitCameraPlugin)
         .add_plugins(CustomMaterialPlugin)
         .add_plugins(PhysicsPlugin {
-            max_number_of_agents: 1024,
-            number_of_grids_one_dimension: 16,
+            max_number_of_agents: 1024 * 1024,
+            number_of_grids_one_dimension: 1024,
             half_map_height: 8,
             e_agent: 0.8,
             e_envir: 0.8,
@@ -42,6 +47,7 @@ fn main() {
         })
         .add_systems(Startup, setup)
         .add_systems(Update, physics_ui)
+        .add_systems(Update, freeze_orbit_yzero)
         .run();
 }
 
@@ -65,7 +71,9 @@ fn setup(
             )),
             ..default()
         },
-        Transform::from_xyz(0., 16., 16.).looking_at(Vec3::ZERO, Vec3::Y),
+        DepthPrepass,
+        DeferredPrepass,
+        Transform::from_xyz(0., 64., 64.).looking_at(Vec3::ZERO, Vec3::Y),
         PanOrbitCamera::default(),
     ));
 
@@ -82,7 +90,7 @@ fn setup(
     let bg_matr_handle = rfg_mats.add(ReferenceGridMaterial {
         base: StandardMaterial {
             base_color: Color::srgb(0.8, 0.7, 0.6),
-            // opaque_render_method: OpaqueRendererMethod::Deferred,
+            opaque_render_method: OpaqueRendererMethod::Deferred,
             ..default()
         },
         extension: ReferenceGridExtension {
@@ -182,4 +190,11 @@ fn physics_ui(
             ui.separator();
         });
     });
+}
+
+fn freeze_orbit_yzero(mut orbit: Query<&mut PanOrbitCamera>) {
+    let mut orbit = orbit.single_mut();
+
+    orbit.target_focus.y = 0.;
+    orbit.force_update = true;
 }
